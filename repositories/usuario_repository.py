@@ -235,7 +235,7 @@ class UsuarioRepository:
                 "ds_perfil": registro[4],
                 "email": registro[5],
                 "senha": registro[6],
-                "data_cadastro": registro[7]
+                "cadastro": registro[7]
             }
 
         return None

@@ -38,7 +38,7 @@ class CriarBanco:
             id_perfil INTEGER NOT NULL,
             email VARCHAR(150) NOT NULL,
             senha VARCHAR(100) NOT NULL,
-            data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
             CONSTRAINT fk_usuario_perfil
                 FOREIGN KEY (id_perfil)

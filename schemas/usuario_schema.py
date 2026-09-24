@@ -8,8 +8,11 @@ from pydantic import BaseModel
 # os dados de um usuário.
 class UsuarioSchema(BaseModel):
 
-    # id do animal para identificação do usuário.
-    id_animal: str
+    # id do usuario para identificação do perfil.
+    cadastro: int
+
+    # id do usuario para identificação do perfil.
+    id_usuario: int
 
     # Nome completo do usuário.
     nome: str

@@ -11,6 +11,9 @@ class Usuario:
         email = "",
         senha = ""):
 
+        # Data do cadastro do usuário.
+        self.cadastro = cadastro
+
         # Código identificador do usuário.
         self.id_usuario = id_usuario
 

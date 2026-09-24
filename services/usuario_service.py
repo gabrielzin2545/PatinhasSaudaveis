@@ -168,6 +168,21 @@ class UsuarioService:
 
             # Impede a atualização sem perfil.
             raise ValueError("O perfil do usuário é obrigatório.")
+        
+
+        # Verifica se o cadastro do usuário foi informado.
+        if not usuario.cadastro:
+
+            # Interrompe a operação caso não exista um ID.
+            raise ValueError("A data do cadastro é obrigatório.")
+        
+        # Verifica se a senha do usuário foi informado.
+        if not usuario.senha:
+
+            # Interrompe a operação caso não exista um ID.
+            raise ValueError("A senha do usuário é obrigatório.")
+
+
 
 
         # Verifica se já existe outro usuário utilizando

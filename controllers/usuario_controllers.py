@@ -40,6 +40,13 @@ def cadastrar(usuario_schema: UsuarioSchema):
     # Cria um objeto do nosso Model Usuario.
     usuario = Usuario(
 
+        # Recebe o id usuario do Schema.
+        id_usuario=usuario_schema.id_usuario,
+
+
+        # Recebe o cadastro do Schema.
+        cadastro=usuario_schema.cadastro,
+
         # Recebe o nome do Schema.
         nome=usuario_schema.nome,
 
