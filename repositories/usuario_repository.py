@@ -32,17 +32,18 @@ class UsuarioRepository:
         cursor.execute("""
             INSERT INTO usuario
             (
+                ra,
                 nome,
                 id_perfil,
                 email,
                 senha,
-                cadastro
+                data_cadastro
             )
             VALUES (?, ?, ?, ?, ?, ?)
         """, (
 
             # Envia o RA do usuário.
-            usuario.id_usuario,
+            usuario.ra,
 
             # Envia o nome do usuário.
             usuario.nome,
@@ -57,7 +58,7 @@ class UsuarioRepository:
             usuario.senha,
 
             # Envia a data de cadastro.
-            usuario.cadastro,
+            usuario.data_cadastro,
         ))
 
         # Obtém o id gerado pelo banco para o registro inserido.
@@ -94,12 +95,13 @@ class UsuarioRepository:
         cursor.execute("""
             SELECT
                 u.id_usuario,
+                u.ra,
                 u.nome,
                 u.id_perfil,
                 p.ds_perfil,
                 u.email,
                 u.senha,
-                u.cadastro
+                u.data_cadastro
             FROM usuario u
             INNER JOIN perfil p
                 ON p.id_perfil = u.id_perfil
@@ -117,6 +119,7 @@ class UsuarioRepository:
         for registro in registros:
             usuarios.append({
                 "id_usuario": registro[0],
+                "ra": registro[1],
                 "nome": registro[2],
                 "id_perfil": registro[3],
                 "ds_perfil": registro[4],
@@ -146,12 +149,13 @@ class UsuarioRepository:
         cursor.execute("""
             SELECT
                 u.id_usuario,
+                u.ra,
                 u.nome,
                 u.id_perfil,
                 p.ds_perfil,
                 u.email,
                 u.senha,
-                u.cadastro
+                u.data_cadastro
             FROM usuario u
             INNER JOIN perfil p
                 ON p.id_perfil = u.id_perfil
@@ -172,6 +176,7 @@ class UsuarioRepository:
         if registro:
             return {
                 "id_usuario": registro[0],
+                "ra": registro[1],
                 "nome": registro[2],
                 "id_perfil": registro[3],
                 "ds_perfil": registro[4],
@@ -204,12 +209,13 @@ class UsuarioRepository:
         cursor.execute("""
             SELECT
                 u.id_usuario,
+                u.ra,
                 u.nome,
                 u.id_perfil,
                 p.ds_perfil,
                 u.email,
                 u.senha,
-                u.cadastro
+                u.data_cadastro
             FROM usuario u
             INNER JOIN perfil p
                 ON p.id_perfil = u.id_perfil
@@ -230,15 +236,17 @@ class UsuarioRepository:
         if registro:
             return {
                 "id_usuario": registro[0],
+                "ra": registro[1],
                 "nome": registro[2],
                 "id_perfil": registro[3],
                 "ds_perfil": registro[4],
                 "email": registro[5],
                 "senha": registro[6],
-                "cadastro": registro[7]
+                "data_cadastro": registro[7]
             }
 
         return None
+
 
     # ============================================================
     # ATUALIZAR
@@ -258,14 +266,17 @@ class UsuarioRepository:
         cursor.execute("""
             UPDATE usuario
             SET
+                ra = ?,
                 nome = ?,
                 id_perfil = ?,
                 email = ?,
                 senha = ?,
-                cadastro = ?
+                data_cadastro = ?
             WHERE id_usuario = ?
         """, (
 
+            # Novo RA.
+            usuario.ra,
 
             # Novo nome.
             usuario.nome,
@@ -280,7 +291,7 @@ class UsuarioRepository:
             usuario.senha,
 
             # Nova data de cadastro.
-            usuario.cadastro,
+            usuario.data_cadastro,
 
             # Identifica o usuário que será alterado.
             usuario.id_usuario,

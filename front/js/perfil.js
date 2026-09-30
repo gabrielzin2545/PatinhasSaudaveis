@@ -68,19 +68,19 @@ async function carregarPerfis() {
             const actions = document.createElement('div');
             actions.className = 'profile-actions';
 
-            const btnEdit = document.createElement('button');
-            btnEdit.className = 'btn ghost';
-            btnEdit.style.marginRight = '8px';
-            btnEdit.textContent = 'Editar';
-            btnEdit.onclick = function(){ editarPerfil(perfil); };
+                const btnEdit = document.createElement('button');
+                btnEdit.className = 'btn ghost';
+                btnEdit.style.marginRight = '8px';
+                btnEdit.textContent = 'Editar';
+                btnEdit.onclick = function(){ editarPerfil(perfil); };
 
-            const btnRemove = document.createElement('button');
-            btnRemove.className = 'delete-btn';
-            btnRemove.textContent = 'Remover';
-            btnRemove.onclick = function(){ removerPerfil(perfil.id_perfil); };
+                const btnRemove = document.createElement('button');
+                btnRemove.className = 'delete-btn';
+                btnRemove.textContent = 'Remover';
+                btnRemove.onclick = function(){ removerPerfil(perfil.id_perfil); };
 
-            actions.appendChild(btnEdit);
-            actions.appendChild(btnRemove);
+                actions.appendChild(btnEdit);
+                actions.appendChild(btnRemove);
 
             card.appendChild(head);
             card.appendChild(meta);
@@ -100,19 +100,24 @@ async function carregarPerfis() {
 
 // Cadastra um novo perfil usando o formulário existente.
 async function cadastrarPerfil() {
-
-
-
     const descricaoInput = document.getElementById('descricaoPerfil');
     const descricao = descricaoInput.value;
     if (descricao.trim() === '') {
         alert('Digite uma descrição para o perfil.');
         return;
     }
-    
+
+    // Obtém usuário logado do localStorage para validação
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');
+
     // Se estivermos em modo edição, realiza PUT, caso contrário POST
     if (window.perfilEditId) {
-        const dados = { ds_perfil: descricao };
+        const dados = {
+            ds_perfil: descricao,
+            // Adiciona ID e perfil do usuário logado para validação de permissão
+            id_usuario_logado: usuarioLogado.id_usuario || 0,
+            id_perfil_logado: usuarioLogado.id_perfil || 0
+        };
         try {
             const resposta = await fetch(`${API_BASE}/perfis/${window.perfilEditId}`, {
                 method: 'PUT',
@@ -143,7 +148,12 @@ async function cadastrarPerfil() {
         }
     }
 
-    const dados = { ds_perfil: descricao };
+    const dados = {
+        ds_perfil: descricao,
+        // Adiciona ID e perfil do usuário logado para validação de permissão
+        id_usuario_logado: usuarioLogado.id_usuario || 0,
+        id_perfil_logado: usuarioLogado.id_perfil || 0
+    };
 
     try {
         const resposta = await fetch(`${API_BASE}/perfis/`, {
@@ -182,7 +192,10 @@ async function removerPerfil(id_perfil) {
     if (!confirmado) return;
 
     try {
-        const resposta = await fetch(`${API_BASE}/perfis/${id_perfil}`, {
+        // Obtém usuário logado do localStorage para validação
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');
+
+        const resposta = await fetch(`${API_BASE}/perfis/${id_perfil}?id_usuario_logado=${usuarioLogado.id_usuario || 0}&id_perfil_logado=${usuarioLogado.id_perfil || 0}`, {
             method: 'DELETE'
         });
 
@@ -202,6 +215,7 @@ async function removerPerfil(id_perfil) {
         alert(err.message || 'Erro ao remover perfil');
     }
 }
+
 
 // Filtra os perfis já renderizados no grid por texto (client-side)
 function filterProfiles(text){

@@ -79,7 +79,6 @@ class UsuarioService:
         return self.repository.inserir(usuario)
 
 
-
     # ============================================================
     # LISTAR USUÁRIOS
     # ============================================================
@@ -156,6 +155,7 @@ class UsuarioService:
             raise ValueError("O nome do usuário é obrigatório.")
 
 
+
         # Verifica se o e-mail foi informado.
         if not usuario.email:
 
@@ -168,37 +168,20 @@ class UsuarioService:
 
             # Impede a atualização sem perfil.
             raise ValueError("O perfil do usuário é obrigatório.")
-        
-
-        # Verifica se o cadastro do usuário foi informado.
-        if not usuario.cadastro:
-
-            # Interrompe a operação caso não exista um ID.
-            raise ValueError("A data do cadastro é obrigatório.")
-        
-        # Verifica se a senha do usuário foi informado.
-        if not usuario.senha:
-
-            # Interrompe a operação caso não exista um ID.
-            raise ValueError("A senha do usuário é obrigatório.")
-
-
 
 
         # Verifica se já existe outro usuário utilizando
         # o mesmo e-mail.
         usuario_email = self.repository.buscar_por_email(usuario.email)
 
-
         # Caso exista um usuário com o mesmo e-mail,
         # verifica se ele é diferente do usuário atual.
         if usuario_email:
-
-            
             # usuario_email pode ser um dicionário (repository) ou um objeto.
             uid = usuario_email.get('id_usuario') if isinstance(usuario_email, dict) else getattr(usuario_email, 'id_usuario', None)
             if uid != usuario.id_usuario:
                 raise ValueError("O e-mail informado já está sendo utilizado.")
+
 
         # Depois de todas as validações,
         # solicita ao Repository a atualização.
@@ -261,21 +244,39 @@ class UsuarioService:
         #
         # Observe que o Repository não está validando
         # o login. Ele apenas busca o usuário.
-        usuario = self.repository.buscar_por_email(email)
 
+        # Suporte temporário para usuário administrador local (hardcoded)
+        # Observação de segurança: este bloco é apenas para facilitar testes
+        # e deve ser removido ou substituído por autenticação segura (JWT
+        # + senhas hasheadas) em produção.
+        if email == 'admin' and senha == '12345678':
+            # Retorna um usuário virtual representando o admin.
+            #
+            # IMPORTANTE: id_perfil = 0 aqui, pois nenhum perfil real
+            # da tabela "perfil" usa esse ID (Aluno=1, Professor=2,
+            # Equipe de Apoio=3). Usar um número que já pertence a um
+            # perfil real (como 1) faria o sistema de permissões
+            # confundir o admin com aquele perfil.
+            return {
+                'id_usuario': 0,
+                'nome': 'Administrador',
+                'id_perfil': 0,
+                'email': 'admin',
+                'senha': senha,
+                'ds_perfil': 'Administrador'
+            }
+
+        usuario = self.repository.buscar_por_email(email)
 
         # Verifica se o usuário foi encontrado.
         if not usuario:
-
             raise ValueError("E-mail ou senha inválidos.")
-
 
         # Obtém a senha armazenada (suporta dicionário ou objeto).
         senha_armazenada = usuario.get('senha') if isinstance(usuario, dict) else getattr(usuario, 'senha', None)
 
         if senha_armazenada != senha:
             raise ValueError("E-mail ou senha inválidos.")
-
 
         # Retorna o usuário autenticado.
         return usuario

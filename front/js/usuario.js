@@ -60,7 +60,15 @@ async function cadastrarUsuario(){
 
     if (!nome || !ra || !email || !senha || !id_perfil){ alert('Preencha todos os campos.'); return; }
 
-    const dados = { ra, nome, id_perfil, email, senha };
+    // Obtém usuário logado do localStorage
+    const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');
+
+    const dados = {
+        ra, nome, id_perfil, email, senha,
+        // Adiciona ID e perfil do usuário logado para validação de permissão
+        id_usuario_logado: usuarioLogado.id_usuario || 0,
+        id_perfil_logado: usuarioLogado.id_perfil || 0
+    };
 
     // Se estiver em modo edição, usa PUT
     if (window.usuarioEditId) {
@@ -88,7 +96,10 @@ async function removerUsuario(id_usuario){
     const confirmado = await (typeof showModal === 'function' ? showModal('Confirmar remoção','Deseja remover este usuário?') : Promise.resolve(confirm('Deseja remover este usuário?')));
     if (!confirmado) return;
     try{
-        const resp = await fetch(`${API_BASE_USERS}/usuarios/${id_usuario}`, { method:'DELETE' });
+        // Obtém usuário logado do localStorage para validação
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');
+
+        const resp = await fetch(`${API_BASE_USERS}/usuarios/${id_usuario}?id_usuario_logado=${usuarioLogado.id_usuario || 0}&id_perfil_logado=${usuarioLogado.id_perfil || 0}`, { method:'DELETE' });
         if (resp.ok){ const res = await resp.json(); if (typeof showToast==='function') showToast(res.mensagem||'Usuário removido','success'); await carregarUsuarios(); }
         else { let e={detail:'Erro'}; try{ e = await resp.json(); }catch{} if (typeof showToast==='function') showToast(e.detail||JSON.stringify(e),'error'); else alert(e.detail||JSON.stringify(e)); }
     }catch(err){ alert(err.message || 'Erro ao remover usuário'); }
@@ -102,17 +113,48 @@ function filterUsers(text){
 }
 
 // Preenche o select de perfis no formulário de cadastro de usuário
+// Esta função carrega todos os perfis disponíveis e popula o select
 async function popularSelectPerfis(){
     const sel = document.getElementById('selectPerfil');
     if (!sel) return;
+
     try{
+        // Requisita a lista de perfis da API
         const r = await fetch(`${API_BASE_USERS}/perfis/`);
-        if (!r.ok) return;
-        const perfis = await r.json(); sel.innerHTML = '<option value="">Selecione um perfil</option>';
-        perfis.forEach(p => { const o = document.createElement('option'); o.value = p.id_perfil; o.textContent = p.ds_perfil; sel.appendChild(o); });
-        // Se houver perfis, pre-seleciona o primeiro para evitar envio com campo vazio
-        if (perfis && perfis.length > 0) sel.value = perfis[0].id_perfil;
-    }catch(e){}
+
+        // Verifica se a requisição foi bem-sucedida
+        if (!r.ok) {
+            console.error('Erro ao carregar perfis. Status:', r.status);
+            sel.innerHTML = '<option value="">Erro ao carregar perfis</option>';
+            return;
+        }
+
+        // Converte a resposta JSON
+        const perfis = await r.json();
+
+        // Limpa o select e adiciona opção padrão
+        sel.innerHTML = '<option value="">Selecione um perfil</option>';
+
+        // Adiciona cada perfil como uma opção
+        if (perfis && perfis.length > 0) {
+            perfis.forEach(p => {
+                const o = document.createElement('option');
+                o.value = p.id_perfil;
+                o.textContent = p.ds_perfil;
+                sel.appendChild(o);
+            });
+
+            // Pré-seleciona o primeiro perfil
+            sel.value = perfis[0].id_perfil;
+        } else {
+            console.warn('Nenhum perfil encontrado');
+            sel.innerHTML = '<option value="">Nenhum perfil disponível</option>';
+        }
+
+    } catch(e){
+        console.error('Erro ao popular select de perfis:', e);
+        sel.innerHTML = '<option value="">Erro ao carregar perfis</option>';
+    }
 }
 
 
@@ -126,4 +168,54 @@ function editarUsuario(u){
     popularSelectPerfis().then(()=>{ try{ document.getElementById('selectPerfil').value = u.id_perfil; }catch(e){} });
     window.usuarioEditId = u.id_usuario;
     showScreen('telaUsuarioCadastro');
+}
+
+
+// Função de login: envia credenciais para a API e grava usuário no localStorage
+async function fazerLogin(){
+    const email = (document.getElementById('loginEmail')||{}).value || '';
+    const senha = (document.getElementById('loginSenha')||{}).value || '';
+    const errEl = document.getElementById('loginError');
+    if (errEl) errEl.textContent = '';
+    if (!email || !senha) { if (errEl) errEl.textContent = 'Preencha e-mail e senha.'; else alert('Preencha e-mail e senha.'); return; }
+
+    try{
+        // Envia as credenciais para o endpoint de login.
+        // API_BASE_USERS é definido no topo do arquivo e aponta para
+        // a API FastAPI (http://127.0.0.1:8000 por padrão).
+        const resp = await fetch(`${API_BASE_USERS}/usuarios/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+        });
+
+        if (!resp.ok){
+            let e = { detail: 'Erro ao autenticar' };
+            try{ e = await resp.json(); }catch(err){ console.warn('Resposta inválida JSON', err); }
+            const msg = e && (e.detail || e.mensagem) ? (e.detail || e.mensagem) : 'E-mail ou senha inválidos';
+            if (errEl) errEl.textContent = msg; else alert(msg);
+            console.warn('Login falhou', resp.status, msg);
+            return;
+        }
+
+        // Resposta bem-sucedida deve conter o objeto `usuario`.
+        const data = await resp.json();
+        const usuario = data.usuario;
+        // Armazena usuário autenticado
+        localStorage.setItem('usuario_logado', JSON.stringify(usuario));
+        // Pode armazenar token se houver (aqui reuso id como placeholder)
+        if (usuario && usuario.id_usuario) localStorage.setItem('token', usuario.id_usuario);
+
+        // Atualiza UI e remove o bloqueio.
+        if (typeof setLoggedUser === 'function') setLoggedUser(usuario);
+        showScreen('bemVindo');
+        if (typeof showToast === 'function') showToast(data.mensagem || 'Login realizado','success');
+        document.getElementById('formLogin').reset();
+    }catch(err){
+        console.error('Erro ao processar login', err);
+        const errEl = document.getElementById('loginError');
+        // Mostra mensagem de erro amigável ao usuário e registra detalhes no console.
+        if (errEl) errEl.textContent = 'Erro de rede ou servidor. Veja o console.';
+        else alert(err.message || 'Erro ao processar login');
+    }
 }
