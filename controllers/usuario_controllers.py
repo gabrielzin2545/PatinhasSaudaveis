@@ -2,16 +2,21 @@
 # Ele permite criar e organizar as rotas da API.
 from fastapi import APIRouter, HTTPException
 
-
 # Importa o modelo Usuario.
 # Esse é o objeto utilizado internamente pela aplicação.
 from models.usuario import Usuario
 
-
-# Importa o Schema utilizado pelo FastAPI.
-# Ele representa os dados recebidos pela API.
+# Importa os Schemas utilizados pelo FastAPI.
+# Eles representam os dados recebidos pela API.
 from schemas.usuario_schema import UsuarioSchema
 
+# CORREÇÃO DEFINITIVA: Importação alterada para usar apenas 'BaseModel'.
+# O 'EmailStr' foi removido para evitar o erro 'ModuleNotFoundError: No module named email_validator'
+from pydantic import BaseModel
+
+class LoginSchema(BaseModel):
+    email: str  # Mudado de EmailStr para str para aceitar o texto sem quebrar o Uvicorn
+    senha: str
 
 # Importa o Service responsável pelas regras
 # de negócio dos usuários.
@@ -39,10 +44,8 @@ def cadastrar(usuario_schema: UsuarioSchema):
 
     # Cria um objeto do nosso Model Usuario.
     usuario = Usuario(
-
         # Recebe o id usuario do Schema.
         id_usuario=usuario_schema.id_usuario,
-
 
         # Recebe o cadastro do Schema.
         cadastro=usuario_schema.cadastro,
@@ -60,20 +63,17 @@ def cadastrar(usuario_schema: UsuarioSchema):
         senha=usuario_schema.senha
     )
 
-    # Envia o Model para o Service.
-    service.cadastrar(usuario)
-
-    # Envia o Model para o Service e trata possíveis erros.
+    # Envia o Model para o Service e trata possíveis erros dentro do bloco try.
     try:
         novo_id = service.cadastrar(usuario)
+        return {
+            "mensagem": "Usuário cadastrado com sucesso.",
+            "id_usuario": novo_id
+        }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return {
-        "mensagem": "Usuário cadastrado com sucesso.",
-        "id_usuario": novo_id
-    }
 
 
 # ============================================================
@@ -114,9 +114,11 @@ def excluir(id_usuario: int):
 
 @router.put("/{id_usuario}")
 def atualizar(id_usuario: int, usuario_schema: UsuarioSchema):
+    # Ajustado de `ra=usuario_schema.ra` para `cadastro=usuario_schema.cadastro` 
+    # para manter a consistência com o modelo de dados definido no método cadastrar.
     usuario = Usuario(
         id_usuario=id_usuario,
-        ra=usuario_schema.ra,
+        cadastro=usuario_schema.cadastro,
         nome=usuario_schema.nome,
         id_perfil=usuario_schema.id_perfil,
         email=usuario_schema.email,
@@ -131,3 +133,27 @@ def atualizar(id_usuario: int, usuario_schema: UsuarioSchema):
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"mensagem": "Usuário atualizado com sucesso."}
+
+
+# ============================================================
+# LOGIN (AUTENTICAÇÃO)
+# ============================================================
+
+
+@router.post('/login')
+def login(login_schema: LoginSchema):
+    # Endpoint de autenticação.
+    # Recebe `LoginSchema`, delega validação/autenticação ao Service
+    # e retorna os dados do usuário autenticado.
+    try:
+        usuario = service.login(login_schema.email, login_schema.senha)
+        return {
+            "mensagem": "Login realizado com sucesso.",
+            "usuario": usuario
+        }
+    except ValueError as e:
+        # Erros de validação/credenciais incorretas retornam 401
+        raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        # Erros inesperados são tratados como 500
+        raise HTTPException(status_code=500, detail=str(e))

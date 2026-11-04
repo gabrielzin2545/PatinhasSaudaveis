@@ -52,7 +52,6 @@ async function carregarUsuarios(){
 
 // Cadastro de usuário (le o formulário e envia para API)
 async function cadastrarUsuario(){
-    const ra = document.getElementById('inputRa').value.trim();
     const nome = document.getElementById('inputNome').value.trim();
     const id_perfil = parseInt(document.getElementById('selectPerfil').value || '0');
     const email = document.getElementById('inputEmail').value.trim();
@@ -64,7 +63,7 @@ async function cadastrarUsuario(){
     const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');
 
     const dados = {
-        ra, nome, id_perfil, email, senha,
+        nome, id_perfil, email, senha,
         // Adiciona ID e perfil do usuário logado para validação de permissão
         id_usuario_logado: usuarioLogado.id_usuario || 0,
         id_perfil_logado: usuarioLogado.id_perfil || 0
@@ -159,8 +158,7 @@ async function popularSelectPerfis(){
 
 
 // Inicia modo de edição para usuário (pré-preenche formulário)
-function editarUsuario(u){
-    document.getElementById('inputRa').value = u.ra || '';
+function editarUsuario(u){ 
     document.getElementById('inputNome').value = u.nome || '';
     document.getElementById('inputEmail').value = u.email || '';
     document.getElementById('inputSenha').value = u.senha || '';

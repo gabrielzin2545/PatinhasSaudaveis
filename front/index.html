@@ -21,7 +21,7 @@
         <!-- Trilha de navegação lateral fixa, estilo aplicativo -->
         <nav class="nav-rail" aria-label="Navegação principal">
             <div class="nav-brand" title="Patinhas">
-                <span class="nav-logo">S</span>
+                <span class="nav-logo">P</span>
             </div>
 
             <button class="nav-item" data-screen="bemVindo" onclick="showScreen('bemVindo')" title="Início">
@@ -90,7 +90,7 @@
                     <!-- Formulário simples com label associado ao input para acessibilidade -->
                     <form id="formPerfil" onsubmit="event.preventDefault(); cadastrarPerfil(); return false;">
                         <label for="descricaoPerfil">Descrição do Perfil</label>
-                        <input type="text" id="descricaoPerfil" placeholder="Ex: Aluno, Professor" aria-label="Descrição do perfil">
+                        <input type="text" id="descricaoPerfil" placeholder="Ex: Administrador, Cliente e etc..." aria-label="Descrição do perfil">
                         <div class="form-actions">
                             <button class="btn" type="submit">Cadastrar</button>
                             <button class="btn ghost" type="button" onclick="cancelEditsAndGo('bemVindo')">Cancelar</button>

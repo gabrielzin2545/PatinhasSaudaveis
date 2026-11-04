@@ -12,8 +12,8 @@
   --text:#161821;
   --muted:#6b7280;
   --border:#e6e9f0;
-  --primary:#3b82f6;
-  --primary-dark:#2563eb;
+  --primary:#c57cf6;
+  --primary-dark:#bd59db;
   --danger:#dc2626;
   --shadow:0 8px 24px rgba(16,24,40,.06);
   --radius:12px;
@@ -27,8 +27,8 @@ html.dark{
   --text:#eef0f7;
   --muted:#9aa0b4;
   --border:#262a3f;
-  --primary:#60a5fa;
-  --primary-dark:#3b82f6;
+  --primary:#b788d4;
+  --primary-dark:#d4aded;
   --shadow:0 8px 24px rgba(0,0,0,.4);
 }
 
@@ -206,7 +206,7 @@ body{
 .toast{min-width:220px;padding:10px 12px;border-radius:8px;color:#fff;box-shadow:0 6px 20px rgba(2,6,23,.2);opacity:0;transform:translateY(-8px);animation:toast-in .25s forwards}
 .toast--success{background:linear-gradient(90deg,#16a34a,#22c55e)}
 .toast--error{background:linear-gradient(90deg,#dc2626,#ef4444)}
-.toast--info{background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.toast--info{background:linear-gradient(90deg,#c166e1,#aa7be3)}
 @keyframes toast-in{to{opacity:1;transform:none}}
 
 /* Formulário */
