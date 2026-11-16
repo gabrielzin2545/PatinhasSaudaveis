@@ -53,8 +53,8 @@ class UsuarioRepository:
             # Envia a senha.
             usuario.senha,
 
-            # Envia a data de cadastro.
-            usuario.cadastro,
+            # Envia a data de data_cadastro.
+            usuario.data_cadastro,
         ))
 
             # Obtém o id gerado pelo banco para o registro inserido.
@@ -174,7 +174,7 @@ class UsuarioRepository:
                 "ds_perfil": registro[4],
                 "email": registro[5],
                 "senha": registro[6],
-                "cadastro": registro[7]
+                "data_cadastro": registro[7]
             }
 
         return None
@@ -232,7 +232,7 @@ class UsuarioRepository:
                 "ds_perfil": registro[4],
                 "email": registro[5],
                 "senha": registro[6],
-                "cadastro": registro[7]
+                "data_cadastro": registro[7]
             }
 
         return None
@@ -260,7 +260,7 @@ class UsuarioRepository:
                 id_perfil = ?,
                 email = ?,
                 senha = ?,
-                cadastro = ?
+                data_cadastro = ?
             WHERE id_usuario = ?
         """, (
 
@@ -276,8 +276,8 @@ class UsuarioRepository:
             # Nova senha.
             usuario.senha,
 
-            # Nova data de cadastro.
-            usuario.cadastro,
+            # Nova data de data_cadastro.
+            usuario.data_cadastro,
 
             # Identifica o usuário que será alterado.
             usuario.id_usuario,

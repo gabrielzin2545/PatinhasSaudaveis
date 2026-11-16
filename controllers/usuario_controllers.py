@@ -47,8 +47,8 @@ def cadastrar(usuario_schema: UsuarioSchema):
         # Recebe o id usuario do Schema.
         id_usuario=usuario_schema.id_usuario,
 
-        # Recebe o cadastro do Schema.
-        cadastro=usuario_schema.cadastro,
+        # Recebe o data cadastro do Schema.
+        #data_cadastro=usuario_schema.data_cadastro,
 
         # Recebe o nome do Schema.
         nome=usuario_schema.nome,
@@ -118,7 +118,7 @@ def atualizar(id_usuario: int, usuario_schema: UsuarioSchema):
     # para manter a consistência com o modelo de dados definido no método cadastrar.
     usuario = Usuario(
         id_usuario=id_usuario,
-        cadastro=usuario_schema.cadastro,
+        data_cadastro=usuario_schema.data_cadastro,
         nome=usuario_schema.nome,
         id_perfil=usuario_schema.id_perfil,
         email=usuario_schema.email,

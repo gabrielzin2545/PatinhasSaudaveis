@@ -7,12 +7,12 @@ class Usuario:
         id_usuario = 0,
         nome = "",
         id_perfil = 0,
-        cadastro = None,
+        data_cadastro = None,
         email = "",
         senha = ""):
 
         # Data do cadastro do usuário.
-        self.cadastro = cadastro
+        self.data_cadastro = data_cadastro
 
         # Código identificador do usuário.
         self.id_usuario = id_usuario
@@ -31,7 +31,7 @@ class Usuario:
         
         # Caso nenhuma data seja informada,
         # utiliza a data e hora atuais.
-        if cadastro is None:
-            self.cadastro = datetime.now()
+        if data_cadastro is None:
+            self.data_cadastro = datetime.now()
         else:
-            self.cadastro = cadastro
+            self.data_cadastro = data_cadastro

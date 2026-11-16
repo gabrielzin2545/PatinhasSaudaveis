@@ -67,7 +67,7 @@ class UsuarioService:
         # Verifica se foi encontrado algum usuário.
         if usuario_existente:
 
-            # Impede o cadastro de um e-mail duplicado.
+            # Impede o data_cadastro de um e-mail duplicado.
             raise ValueError(
                 "Já existe um usuário cadastrado com este e-mail."
             )

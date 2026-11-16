@@ -57,7 +57,7 @@ async function cadastrarUsuario(){
     const email = document.getElementById('inputEmail').value.trim();
     const senha = document.getElementById('inputSenha').value.trim();
 
-    if (!nome || !ra || !email || !senha || !id_perfil){ alert('Preencha todos os campos.'); return; }
+    if (!nome || !email || !senha || !id_perfil){ alert('Preencha todos os campos.'); return; }
 
     // Obtém usuário logado do localStorage
     const usuarioLogado = JSON.parse(localStorage.getItem('usuario_logado') || '{}');

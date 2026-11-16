@@ -9,7 +9,7 @@ from pydantic import BaseModel
 class UsuarioSchema(BaseModel):
     
     # id do usuario para identificação do perfil.
-    cadastro: int
+    data_cadastro: int
 
     # id do usuario para identificação do perfil.
     id_usuario: int
