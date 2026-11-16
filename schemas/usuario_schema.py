@@ -1,6 +1,8 @@
 # Importa o BaseModel do Pydantic.
 # O FastAPI utiliza o Pydantic para validar
 # os dados recebidos nas requisições.
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -8,11 +10,11 @@ from pydantic import BaseModel
 # os dados de um usuário.
 class UsuarioSchema(BaseModel):
     
-    # id do usuario para identificação do perfil.
-    data_cadastro: int
+    # Data do cadastro (opcional: o Model usa a data atual quando não informada).
+    data_cadastro: Optional[int] = None
 
-    # id do usuario para identificação do perfil.
-    id_usuario: int
+    # id do usuario (opcional no cadastro: o banco gera o id automaticamente).
+    id_usuario: int = 0
 
     # Nome completo do usuário.
     nome: str
