@@ -33,7 +33,7 @@ async function carregarUsuarios(){
             const title = document.createElement('div'); title.className='profile-title'; title.textContent = u.nome || u.email;
             head.appendChild(avatar); head.appendChild(title);
 
-            const meta = document.createElement('div'); meta.className='profile-meta muted'; meta.textContent = `RA: ${u.ra} • ${u.ds_perfil || ''}`;
+            const meta = document.createElement('div'); meta.className='profile-meta muted'; meta.textContent = `• ${u.ds_perfil || ''}`;
 
             const actions = document.createElement('div'); actions.className='profile-actions';
             const btnEdit = document.createElement('button'); btnEdit.className='btn ghost'; btnEdit.style.marginRight='8px'; btnEdit.textContent='Editar'; btnEdit.onclick = function(){ editarUsuario(u); };

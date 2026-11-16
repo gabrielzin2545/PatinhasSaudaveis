@@ -169,12 +169,12 @@ class UsuarioRepository:
         if registro:
             return {
                 "id_usuario": registro[0],
-                "nome": registro[2],
-                "id_perfil": registro[3],
-                "ds_perfil": registro[4],
-                "email": registro[5],
-                "senha": registro[6],
-                "data_cadastro": registro[7]
+                "nome": registro[1],
+                "id_perfil": registro[2],
+                "ds_perfil": registro[3],
+                "email": registro[4],
+                "senha": registro[5],
+                "data_cadastro": registro[6]
             }
 
         return None
@@ -227,12 +227,12 @@ class UsuarioRepository:
         if registro:
             return {
                 "id_usuario": registro[0],
-                "nome": registro[2],
-                "id_perfil": registro[3],
-                "ds_perfil": registro[4],
-                "email": registro[5],
-                "senha": registro[6],
-                "data_cadastro": registro[7]
+                "nome": registro[1],
+                "id_perfil": registro[2],
+                "ds_perfil": registro[3],
+                "email": registro[4],
+                "senha": registro[5],
+                "data_cadastro": registro[6]
             }
 
         return None
