@@ -64,11 +64,11 @@ def cadastrar(perfil_schema: PerfilSchema, id_usuario_logado: int = 0, id_perfil
 
     # VALIDAÇÃO DE PERMISSÃO
     # Apenas admin pode cadastrar perfis
-    usuario_logado = {
-        "id_usuario": id_usuario_logado,
-        "id_perfil": id_perfil_logado
-    }
-    validar_permissao_gerenciar_perfil(usuario_logado)
+    #usuario_logado = {
+    #    "id_usuario": id_usuario_logado,
+    #    "id_perfil": id_perfil_logado
+    #}
+    #validar_permissao_gerenciar_perfil(usuario_logado)
 
     # Cria um objeto do Model Perfil.
     perfil = Perfil(

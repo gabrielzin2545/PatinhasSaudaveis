@@ -22,6 +22,9 @@ class UsuarioSchema(BaseModel):
     # Identificador do perfil do usuário.
     id_perfil: int
 
+    # Identificar a descrição do usuario
+    ds_perfil: str
+
     # E-mail utilizado pelo usuário.
     email: str
 

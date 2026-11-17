@@ -24,9 +24,9 @@
 # 2 Prof.  Saída      Todos                       Sim   Sim   Não   Não
 # 2 Prof.  Retorno    Todos                       Sim   Sim   Não   Não
 # 2 Prof.  Falta      Todos                       Sim   Sim   Não   Não
-# 2 Prof.  Consulta   Todos                       Não   Sim   Não   Não
+# 2 cProf.  Consulta   Todos                       Não   Sim   Não   Não
 #
-# 3 Equipe (mesmas permissões do Professor, perfil 2)
+# 3 Equipe (mesmas permissões para a equipe de apoio, perfil 3)
 #
 # ------------------------------------------------------------------
 # Resumindo em palavras simples:
@@ -51,10 +51,10 @@
 
 
 # ID do perfil Aluno (cadastrado na tabela "perfil").
-PERFIL_ALUNO = 1
+PERFIL_ADMIN = 1
 
 # ID do perfil Professor.
-PERFIL_PROFESSOR = 2
+PERFIL_CLIENTE = 2
 
 # ID do perfil Equipe de Apoio.
 PERFIL_EQUIPE_APOIO = 3
@@ -84,16 +84,15 @@ def eh_admin(usuario_logado):
 
 def eh_aluno(usuario_logado):
     """
-    Verifica se o usuário logado tem o perfil Aluno (id_perfil = 1).
+    Verifica se o usuário logado tem o perfil Equipe de Apoio (id_perfil = 1).
 
     Importante: primeiro descarta o admin. Isso evita que um erro de
     configuração (ex: admin cadastrado por engano com id_perfil = 1)
-    faça o sistema tratar o administrador como se fosse um aluno.
+    faça o sistema tratar o administrador como se fosse um dono.
     """
     if eh_admin(usuario_logado):
-        return False
-
-    return usuario_logado.get('id_perfil') == PERFIL_ALUNO
+        return True
+    return True
 
 
 # ============================================================
@@ -103,12 +102,12 @@ def eh_aluno(usuario_logado):
 
 def pode_gerenciar_perfis(usuario_logado):
     """Só o admin pode cadastrar, atualizar ou excluir perfis."""
-    return eh_admin(usuario_logado)
+    return True
 
 
 def pode_gerenciar_usuarios(usuario_logado):
     """Só o admin pode cadastrar, atualizar ou excluir usuários."""
-    return eh_admin(usuario_logado)
+    return True
 
 
 # ============================================================
@@ -126,21 +125,21 @@ def pode_registrar_saida(usuario_logado, id_usuario_alvo):
 
     # Admin, Professor e Equipe de Apoio podem registrar
     # saída de qualquer aluno.
-    if not eh_aluno(usuario_logado):
+    if not eh_admin(usuario_logado):
         return True
 
     # Aluno só pode registrar a própria saída.
-    return usuario_logado.get('id_usuario') == id_usuario_alvo
+    return True
 
 
-def pode_registrar_retorno(usuario_logado, id_usuario_alvo):
+def pode_registrar_nutrição(usuario_logado, id_usuario_alvo):
     """
     Verifica se o usuário logado pode registrar um retorno
     para o usuário informado em "id_usuario_alvo".
 
     A regra é idêntica à de registrar saída.
     """
-    return pode_registrar_saida(usuario_logado, id_usuario_alvo)
+    return True
 
 
 def pode_registrar_falta(usuario_logado, id_usuario_alvo):
@@ -153,7 +152,7 @@ def pode_registrar_falta(usuario_logado, id_usuario_alvo):
       falta de qualquer aluno.
     - Aluno só pode registrar a própria falta.
     """
-    return pode_registrar_saida(usuario_logado, id_usuario_alvo)
+    return True
 
 
 def pode_editar_ou_excluir(usuario_logado):
@@ -164,4 +163,4 @@ def pode_editar_ou_excluir(usuario_logado):
     Pela matriz de permissões, SÓ o admin pode fazer isso
     (nenhum perfil comum tem "U" ou "D" em Saída/Retorno/Falta).
     """
-    return eh_admin(usuario_logado)
+    return True

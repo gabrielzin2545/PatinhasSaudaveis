@@ -7,7 +7,7 @@ from models.perfil import Perfil
 
 
 # Importa o Schema utilizado pela API.
-from schemas.perfil_schemas import PerfilSchema
+from schemas.perfil_pet_schemas import PerfilSchema
 
 
 # Importa o Service de Perfil.
